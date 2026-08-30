@@ -8,7 +8,7 @@
 
 | 機能 | 実装 |
 |---|---|
-| 会員登録／ログイン | メール＋パスワード、JWT（`server/routes/auth.ts`） |
+| 会員登録／ログイン | メール＋パスワード、JWT（`server/routes/auth.ts`）。登録時に6桁コードでメール認証（未認証はログイン不可） |
 | プロフィール | 表示名／自己紹介／アイコンURL 編集（`/profile`） |
 | お知らせ配信 | 一覧・詳細。作成は管理者のみ（`server/routes/announcements.ts`） |
 | イベント情報 | 開催予定／すべて 切替（`server/routes/events.ts`） |
@@ -19,7 +19,9 @@
 | 会員限定コンテンツ | `visibility: public / members / premium`。ロック時は url を返さない |
 | 検索 | 投稿本文の部分一致（`$regex`、PoC 用の簡易版） |
 
-**未実装（本開発フェーズ）**: メール認証、画像アップロード基盤、日本語全文検索（Atlas Search / Meilisearch）、プッシュ通知、管理画面、モデレーション。
+**メール認証**: 登録時に6桁の確認コードを送信（`server/services/emailService.ts`。Resend 使用、`RESEND_API_KEY` 未設定時はサーバーのコンソールにコード出力）。認証が済むまでログイン不可。
+
+**未実装（本開発フェーズ）**: 画像アップロード基盤、日本語全文検索（Atlas Search / Meilisearch）、パスワードリセット、プッシュ通知、管理画面、モデレーション。
 
 ## セットアップ
 
@@ -83,8 +85,10 @@ npm run dev:full
 
 ## API 概要
 
-- `POST /api/auth/register` `{ email, password, displayName }`
-- `POST /api/auth/login` `{ email, password }` → `{ token, user }`
+- `POST /api/auth/register` `{ email, password, displayName }` → `{ needsVerification: true, email }`（dev は `devCode` も）
+- `POST /api/auth/verify-email` `{ token }` → `{ ok: true }`
+- `POST /api/auth/resend-verification` `{ email }` → `{ ok: true }`
+- `POST /api/auth/login` `{ email, password }` → `{ token, user }`（未認証は 403 `email_unverified`）
 - `GET  /api/auth/me`
 - `PATCH /api/users/me` / `POST /api/users/me/upgrade` / `downgrade`
 - `GET  /api/posts?q=&tag=&page=` / `POST /api/posts`

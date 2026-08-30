@@ -31,12 +31,14 @@ async function seed() {
       role: 'admin',
       membership: 'premium',
       bio: 'Member Hub の運営です。',
+      emailVerified: true,
     },
     {
       email: 'member@example.com',
       passwordHash,
       displayName: 'たろう',
       bio: 'よろしくお願いします！',
+      emailVerified: true,
     },
     {
       email: 'premium@example.com',
@@ -44,6 +46,7 @@ async function seed() {
       displayName: 'はなこ',
       membership: 'premium',
       bio: '有料会員です。',
+      emailVerified: true,
     },
   ]);
 

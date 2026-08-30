@@ -9,6 +9,12 @@ import {
 } from 'react';
 import { api, getToken, setToken, type User } from '../lib/api';
 
+interface RegisterResult {
+  needsVerification: true;
+  email: string;
+  devCode?: string;
+}
+
 interface AuthState {
   user: User | null;
   loading: boolean;
@@ -17,7 +23,9 @@ interface AuthState {
     email: string,
     password: string,
     displayName: string,
-  ) => Promise<void>;
+  ) => Promise<RegisterResult>;
+  verifyEmail: (token: string) => Promise<void>;
+  resendVerification: (email: string) => Promise<{ devCode?: string }>;
   logout: () => void;
   refresh: () => Promise<void>;
 }
@@ -59,16 +67,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const register = useCallback(
-    async (email: string, password: string, displayName: string) => {
-      const { data } = await api.post<{ token: string; user: User }>(
-        '/auth/register',
-        { email, password, displayName },
-      );
-      setToken(data.token);
-      setUser(data.user);
+    async (
+      email: string,
+      password: string,
+      displayName: string,
+    ): Promise<RegisterResult> => {
+      const { data } = await api.post<RegisterResult>('/auth/register', {
+        email,
+        password,
+        displayName,
+      });
+      // 認証が済むまではログインさせない
+      return data;
     },
     [],
   );
+
+  const verifyEmail = useCallback(async (token: string) => {
+    await api.post('/auth/verify-email', { token });
+  }, []);
+
+  const resendVerification = useCallback(async (email: string) => {
+    const { data } = await api.post<{ devCode?: string }>(
+      '/auth/resend-verification',
+      { email },
+    );
+    return data;
+  }, []);
 
   const logout = useCallback(() => {
     setToken(null);
@@ -76,8 +101,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ user, loading, login, register, logout, refresh }),
-    [user, loading, login, register, logout, refresh],
+    () => ({
+      user,
+      loading,
+      login,
+      register,
+      verifyEmail,
+      resendVerification,
+      logout,
+      refresh,
+    }),
+    [
+      user,
+      loading,
+      login,
+      register,
+      verifyEmail,
+      resendVerification,
+      logout,
+      refresh,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

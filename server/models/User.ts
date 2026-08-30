@@ -16,6 +16,15 @@ const userSchema = new Schema(
     role: { type: String, enum: ['member', 'admin'], default: 'member' },
     // 会員限定コンテンツ用の簡易メンバーシップ
     membership: { type: String, enum: ['free', 'premium'], default: 'free' },
+    // メール認証。未認証の間はログイン不可 (server/routes/auth.ts)
+    emailVerified: { type: Boolean, default: false },
+    emailVerificationToken: {
+      type: new Schema(
+        { value: { type: String }, expiresAt: { type: Date } },
+        { _id: false },
+      ),
+      default: undefined,
+    },
   },
   { timestamps: true },
 );
@@ -32,6 +41,7 @@ export function publicUser(u: any) {
     bio: u.bio ?? '',
     role: u.role,
     membership: u.membership,
+    emailVerified: Boolean(u.emailVerified),
     createdAt: u.createdAt,
   };
 }

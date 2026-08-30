@@ -8,6 +8,7 @@
 - クライアント: React 18 + Vite + TypeScript + Tailwind + React Router + TanStack Query。
 - サーバー: Express + Mongoose(MongoDB) + JWT + zod。`tsx` で直接実行（ビルド不要）。
 - 認証は JWT を `localStorage`（`memberhub.token`）に保持し、axios interceptor で `Authorization: Bearer` を付与。
+- 新規登録はメール認証（6桁コード）必須。未認証ユーザーの `POST /api/auth/login` は 403 `email_unverified`。コード送信は `server/services/emailService.ts`（Resend。`RESEND_API_KEY` 未設定時はコンソール出力にフォールバック）。
 
 ## 開発コマンド
 
@@ -29,5 +30,5 @@
 
 - 検索は `$regex` の部分一致のみ。日本語全文検索は Atlas Search か Meilisearch を別途。
 - 画像・動画・音声は URL 直指定。アップロード基盤なし。
-- メール認証・パスワードリセット・プッシュ通知・管理画面・モデレーションは未実装。
+- メール認証は実装済み（6桁コード / Resend、キー未設定時はコンソール出力）。パスワードリセット・プッシュ通知・管理画面・モデレーションは未実装。
 - `POST /api/users/me/upgrade` は決済なしのダミー。
