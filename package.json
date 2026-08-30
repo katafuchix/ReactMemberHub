@@ -14,11 +14,20 @@
     "start": "tsx server/server.ts",
     "seed": "tsx server/seed.ts",
     "build": "vite build",
+    "build:staging": "vite build --mode staging",
+    "build:production": "vite build --mode production",
     "preview": "vite preview",
+    "cap:sync:staging": "npm run build:staging && cap sync",
+    "cap:sync:production": "npm run build:production && cap sync",
+    "cap:ios": "cap open ios",
+    "cap:android": "cap open android",
     "typecheck": "tsc --noEmit",
     "typecheck:server": "tsc --project tsconfig.server.json --noEmit"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/core": "^8.5.0",
+    "@capacitor/ios": "^8.5.0",
     "@tanstack/react-query": "^5.62.7",
     "axios": "^1.7.9",
     "bcryptjs": "^2.4.3",
@@ -36,6 +45,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.5.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",

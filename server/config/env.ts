@@ -15,6 +15,11 @@ export const env = {
   JWT_SECRET: process.env.JWT_SECRET ?? 'dev-secret-change-me',
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN ?? '7d',
   CLIENT_ORIGIN: process.env.CLIENT_ORIGIN ?? 'http://localhost:5173',
+  // カンマ区切りを配列化。ネイティブ (Capacitor) は capacitor://localhost / https://localhost。
+  CLIENT_ORIGINS: (process.env.CLIENT_ORIGIN ?? 'http://localhost:5173')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean),
   NODE_ENV: process.env.NODE_ENV ?? 'development',
   // メール認証。RESEND_API_KEY 未設定なら確認コードはサーバーのコンソールに出力される。
   RESEND_API_KEY: process.env.RESEND_API_KEY ?? '',

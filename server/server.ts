@@ -14,7 +14,7 @@ import userRoutes from './routes/users';
 const app = express();
 
 app.use(helmet());
-app.use(cors({ origin: env.CLIENT_ORIGIN, credentials: true }));
+app.use(cors({ origin: env.CLIENT_ORIGINS, credentials: true }));
 app.use(express.json({ limit: '1mb' }));
 app.use(morgan('dev'));
 
@@ -43,7 +43,7 @@ async function main() {
   await connectDB();
   app.listen(env.PORT, () => {
     console.log(`[server] listening on http://localhost:${env.PORT}`);
-    console.log(`[server] CORS origin: ${env.CLIENT_ORIGIN}`);
+    console.log(`[server] CORS origins: ${env.CLIENT_ORIGINS.join(', ')}`);
   });
 }
 

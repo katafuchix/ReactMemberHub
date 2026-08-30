@@ -17,6 +17,19 @@
 - `npm run typecheck && npm run typecheck:server` — 型チェック
 - Vite は `/api` を `http://localhost:8000` にプロキシする（`vite.config.ts`）
 
+## モバイル (Capacitor)
+
+詳細は [`docs/capacitor.md`](docs/capacitor.md)。
+
+- クライアント (`dist`) を Capacitor でネイティブ化。`capacitor.config.ts` / `android/` / `ios/` を追加済み。サーバーはリモート API のまま。
+- bundle id: production = `net.deskplate.memberhub` / staging = `net.deskplate.memberhub.dev`。アプリ名はどちらも `Member Hub`。
+  - Android: `android/app/build.gradle` の productFlavors `production` / `dev`（`dev` は `applicationIdSuffix ".dev"`）。`assembleDevDebug` / `assembleProductionRelease`。
+  - iOS: **Debug ビルド = `.dev`（staging）／ Release ビルド = production**（`ios/App/App.xcodeproj/project.pbxproj` の App target 設定）。Release 型の staging 配信が必要になったら Xcode に Staging configuration + scheme を追加する。
+- API 接続先は環境別 Vite mode で切替: `.env.staging` / `.env.production` の `VITE_API_BASE_URL`（絶対URL必須。ネイティブに proxy は無い）。
+  - `npm run cap:sync:staging` / `npm run cap:sync:production` でビルド＋sync。`npm run cap:ios` / `cap:android` で IDE を開く。
+- サーバー CORS は `CLIENT_ORIGIN` をカンマ区切り複数対応（`server/config/env.ts` の `CLIENT_ORIGINS`）。ネイティブ用に `capacitor://localhost`(iOS) / `https://localhost`(Android) を許可。
+- 実機ライブリロードは `capacitor.config.ts` の `server.url` に dev マシンの Vite URL を設定（+ `cleartext: true`）。
+
 ## 規約
 
 - サーバーの import は拡張子なし（`moduleResolution: Bundler` + tsx）。
