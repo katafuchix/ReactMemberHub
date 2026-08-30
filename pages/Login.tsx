@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import VerifyCodeForm from '../components/VerifyCodeForm';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Login() {
@@ -12,6 +13,8 @@ export default function Login() {
   const [password, setPassword] = useState('password123');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // メール未確認: 確認コード入力フェーズ
+  const [unverified, setUnverified] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -20,11 +23,33 @@ export default function Login() {
     try {
       await login(email, password);
       navigate(from, { replace: true });
-    } catch {
-      setError('メールアドレスかパスワードが違います');
+    } catch (err: any) {
+      if (err?.response?.data?.error === 'email_unverified') {
+        setUnverified(true);
+      } else {
+        setError('メールアドレスかパスワードが違います');
+      }
     } finally {
       setBusy(false);
     }
+  }
+
+  if (unverified) {
+    return (
+      <div className="mx-auto mt-16 max-w-sm rounded-lg border bg-white p-6">
+        <h1 className="mb-4 text-lg font-bold">メールアドレスの確認</h1>
+        <p className="mb-3 text-sm text-slate-600">
+          このアカウントはメールアドレスが未確認です。
+        </p>
+        <VerifyCodeForm
+          email={email}
+          onVerified={async () => {
+            await login(email, password);
+            navigate(from, { replace: true });
+          }}
+        />
+      </div>
+    );
   }
 
   return (

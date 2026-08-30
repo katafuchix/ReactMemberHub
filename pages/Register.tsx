@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import VerifyCodeForm from '../components/VerifyCodeForm';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Register() {
-  const { register } = useAuth();
+  const { register, login } = useAuth();
   const navigate = useNavigate();
 
   const [displayName, setDisplayName] = useState('');
@@ -12,23 +13,46 @@ export default function Register() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
+  // 登録後: メール認証フェーズ
+  const [pending, setPending] = useState<{ email: string; devCode?: string } | null>(
+    null,
+  );
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     setError(null);
     try {
-      await register(email, password, displayName);
-      navigate('/', { replace: true });
+      const res = await register(email, password, displayName);
+      setPending({ email: res.email, devCode: res.devCode });
     } catch (err: any) {
       const code = err?.response?.data?.error;
       setError(
         code === 'email_taken'
           ? 'このメールアドレスは登録済みです'
-          : 'パスワードは8文字以上、メール形式を確認してください',
+          : code === 'email_send_failed'
+            ? '確認メールの送信に失敗しました。時間を置いて再度お試しください'
+            : 'パスワードは8文字以上、メール形式を確認してください',
       );
     } finally {
       setBusy(false);
     }
+  }
+
+  if (pending) {
+    return (
+      <div className="mx-auto mt-16 max-w-sm rounded-lg border bg-white p-6">
+        <h1 className="mb-4 text-lg font-bold">メールアドレスの確認</h1>
+        <VerifyCodeForm
+          email={pending.email}
+          devCode={pending.devCode}
+          onVerified={async () => {
+            await login(email, password);
+            navigate('/', { replace: true });
+          }}
+        />
+      </div>
+    );
   }
 
   return (

@@ -16,4 +16,11 @@ export const env = {
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN ?? '7d',
   CLIENT_ORIGIN: process.env.CLIENT_ORIGIN ?? 'http://localhost:5173',
   NODE_ENV: process.env.NODE_ENV ?? 'development',
+  // メール認証。RESEND_API_KEY 未設定なら確認コードはサーバーのコンソールに出力される。
+  RESEND_API_KEY: process.env.RESEND_API_KEY ?? '',
+  RESEND_FROM_EMAIL:
+    process.env.RESEND_FROM_EMAIL ?? 'Member Hub <onboarding@resend.dev>',
+  EMAIL_VERIFICATION_TTL_MIN: Number(
+    process.env.EMAIL_VERIFICATION_TTL_MIN ?? 60,
+  ),
 };

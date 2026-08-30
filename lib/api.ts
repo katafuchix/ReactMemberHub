@@ -32,6 +32,7 @@ export interface User {
   bio: string;
   role?: 'member' | 'admin';
   membership: 'free' | 'premium';
+  emailVerified: boolean;
   createdAt: string;
 }
 
