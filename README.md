@@ -64,6 +64,29 @@ npm run dev:full
 | `npm run typecheck` / `typecheck:server` | 型チェック |
 | `npm run build` | クライアントを `dist/` にビルド |
 
+## モバイルアプリ（iOS / Android）
+
+クライアント（`dist`）を [Capacitor](https://capacitorjs.com/)（`8.5.x`）でネイティブアプリ化できる。Express サーバーはバンドルせず **リモート API のまま**で、Capacitor はフロントエンドだけをラップする。`capacitor.config.ts` / `android/` / `ios/` を追加済み。
+
+| 環境 | bundle id | アプリ名 |
+|---|---|---|
+| production | `net.deskplate.memberhub` | Member Hub |
+| staging | `net.deskplate.memberhub.dev` | Member Hub |
+
+- **Android**: `android/app/build.gradle` の product flavors `production` / `dev`（`dev` は `.dev` サフィックス）。
+- **iOS**: Debug ビルド = staging（`.dev`）／ Release ビルド = production。
+- API 接続先は Vite の mode で切替（`.env.staging` / `.env.production` の `VITE_API_BASE_URL`、絶対 URL 必須）。
+- サーバー CORS は `CLIENT_ORIGIN` をカンマ区切りで複数指定（ネイティブ用に `capacitor://localhost` / `https://localhost` を許可）。
+
+```bash
+npm run cap:sync:staging      # build（--mode staging）+ cap sync
+npm run cap:sync:production    # build（--mode production）+ cap sync
+npm run cap:ios               # Xcode を開く
+npm run cap:android           # Android Studio を開く
+```
+
+詳細は [`docs/capacitor.md`](docs/capacitor.md)。
+
 ## ディレクトリ
 
 ```
