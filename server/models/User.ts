@@ -31,7 +31,12 @@ const userSchema = new Schema(
 
 export const User = model('User', userSchema);
 
-/** API レスポンス用に公開して良いフィールドだけ返す */
+/**
+ * API レスポンス用に公開して良いフィールドだけ返す。
+ *
+ * @param u User のドキュメント (自分自身の情報表示用。email を含む)
+ * @returns レスポンスに含めてよい形に整形したオブジェクト
+ */
 export function publicUser(u: any) {
   return {
     id: String(u._id),
@@ -46,7 +51,12 @@ export function publicUser(u: any) {
   };
 }
 
-/** 他人のプロフィール表示用 (email を含めない) */
+/**
+ * 他人のプロフィール表示用 (email を含めない)。
+ *
+ * @param u User のドキュメント
+ * @returns 公開プロフィールとして返してよい形に整形したオブジェクト
+ */
 export function profileUser(u: any) {
   return {
     id: String(u._id),
