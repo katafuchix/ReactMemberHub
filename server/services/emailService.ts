@@ -28,7 +28,11 @@ interface VerificationEmailParams {
 /**
  * メールアドレス確認コードを送信する。
  * RESEND_API_KEY 未設定時はコンソール出力にフォールバックする (PoC 用)。
- * 送信に失敗した場合は例外を投げる。
+ *
+ * @param params.email 送信先メールアドレス
+ * @param params.displayName メール本文に表示する宛名
+ * @param params.code 6桁の確認コード
+ * @throws Resend の送信に失敗した場合
  */
 export async function sendVerificationEmail({
   email,

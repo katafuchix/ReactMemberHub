@@ -16,22 +16,31 @@ interface RegisterResult {
 }
 
 interface AuthState {
+  /** ログイン中のユーザー。未ログインなら null */
   user: User | null;
+  /** 初回の認証状態確認 (refresh) が完了しているか */
   loading: boolean;
+  /** ログインしてトークン保存 + user をセットする */
   login: (email: string, password: string) => Promise<void>;
+  /** 新規登録する。メール認証が必要なため即ログインはしない */
   register: (
     email: string,
     password: string,
     displayName: string,
   ) => Promise<RegisterResult>;
+  /** メール確認コードを検証する */
   verifyEmail: (token: string) => Promise<void>;
+  /** 確認コードを再送する */
   resendVerification: (email: string) => Promise<{ devCode?: string }>;
+  /** トークンを破棄してログアウトする */
   logout: () => void;
+  /** サーバーに問い合わせて user / loading を再取得する */
   refresh: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
 
+/** 認証状態 (user / loading) と各種認証操作を提供する Context Provider */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -126,6 +135,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+/**
+ * AuthState を取得する。
+ *
+ * @throws AuthProvider の外で呼び出された場合
+ */
 export function useAuth(): AuthState {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error('useAuth must be used within AuthProvider');

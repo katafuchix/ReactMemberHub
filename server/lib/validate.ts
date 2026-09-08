@@ -1,7 +1,13 @@
 import type { NextFunction, Request, Response } from 'express';
 import type { ZodSchema } from 'zod';
 
-/** req.body を zod スキーマで検証し、パース結果で置き換えるミドルウェア */
+/**
+ * req.body を zod スキーマで検証し、パース結果で置き換えるミドルウェア。
+ * 検証に失敗した場合は 400 を返し、next() は呼ばれない。
+ *
+ * @param schema 検証に使う zod スキーマ
+ * @returns Express ミドルウェア
+ */
 export const validateBody =
   (schema: ZodSchema) =>
   (req: Request, res: Response, next: NextFunction): void => {
