@@ -4,13 +4,13 @@
 
 **単一 `package.json`** 構成：ルートに Vite/React クライアント、`server/` に Express + MongoDB API。`tsx` でサーバーを直接実行（ビルド不要）。
 <div>
-<img width="300" alt="ReactMemberHub_1" src="https://github.com/user-attachments/assets/5b3e0dec-9a7a-405a-82f0-cc585b7043a3" />
+<img width="260" alt="ReactMemberHub_1" src="https://github.com/user-attachments/assets/5b3e0dec-9a7a-405a-82f0-cc585b7043a3" />
 
-<img width="300"  alt="ReactMemberHub_2" src="https://github.com/user-attachments/assets/0c1b8eb1-ebd6-4b47-8fd7-f91922464f4b" />
+<img width="260"  alt="ReactMemberHub_2" src="https://github.com/user-attachments/assets/0c1b8eb1-ebd6-4b47-8fd7-f91922464f4b" />
 
-<img width="300"  alt="ReactMemberHub_3" src="https://github.com/user-attachments/assets/6c641696-326a-49c3-882b-c72ef1b9ae5d" />
+<img width="260"  alt="ReactMemberHub_3" src="https://github.com/user-attachments/assets/6c641696-326a-49c3-882b-c72ef1b9ae5d" />
 
-<img width="300"  alt="ReactMemberHub_4" src="https://github.com/user-attachments/assets/65d36c21-87fa-4189-a8e5-29991e09fc99" />
+<img width="260"  alt="ReactMemberHub_4" src="https://github.com/user-attachments/assets/65d36c21-87fa-4189-a8e5-29991e09fc99" />
 </div>
 
 
