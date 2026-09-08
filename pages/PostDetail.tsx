@@ -155,6 +155,11 @@ export default function PostDetail() {
           </p>
         )}
         <ul className="space-y-3">
+          {commentsQuery.isError && (
+            <li className="text-sm text-red-600">
+              コメントを読み込めませんでした
+            </li>
+          )}
           {commentsQuery.data?.map((c) => (
             <li key={c._id} className="border-b pb-2 last:border-0">
               <div className="text-sm text-slate-500">

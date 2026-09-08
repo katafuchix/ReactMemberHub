@@ -48,7 +48,7 @@ export default function Feed() {
   const [body, setBody] = useState('');
   const [tags, setTags] = useState('');
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['posts', search],
     queryFn: async () => {
       const { data } = await api.get<{ items: Post[]; total: number }>(
@@ -142,12 +142,14 @@ export default function Feed() {
 
       {isLoading ? (
         <p className="text-slate-500">読み込み中…</p>
+      ) : isError ? (
+        <p className="text-red-600">投稿を読み込めませんでした</p>
       ) : (
         <div className="space-y-3">
-          {data?.items.map((p) => (
+          {data?.items?.map((p) => (
             <PostCard key={p._id} post={p} />
           ))}
-          {data?.items.length === 0 && (
+          {data?.items?.length === 0 && (
             <p className="text-slate-500">投稿がありません</p>
           )}
         </div>

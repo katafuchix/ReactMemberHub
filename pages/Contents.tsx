@@ -71,7 +71,7 @@ function ContentCard({ item }: { item: ContentItem }) {
 }
 
 export default function Contents() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['contents'],
     queryFn: async () => {
       const { data } = await api.get<{ items: ContentItem[] }>('/contents');
@@ -80,6 +80,8 @@ export default function Contents() {
   });
 
   if (isLoading) return <p className="text-slate-500">読み込み中…</p>;
+  if (isError)
+    return <p className="text-red-600">コンテンツを読み込めませんでした</p>;
 
   const recommended = data?.filter((c) => c.isRecommended) ?? [];
   const rest = data?.filter((c) => !c.isRecommended) ?? [];
