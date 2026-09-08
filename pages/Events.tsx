@@ -4,7 +4,7 @@ import { api, type EventItem } from '../lib/api';
 
 export default function Events() {
   const [scope, setScope] = useState<'upcoming' | 'all'>('upcoming');
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['events', scope],
     queryFn: async () => {
       const { data } = await api.get<{ items: EventItem[] }>('/events', {
@@ -42,6 +42,8 @@ export default function Events() {
 
       {isLoading ? (
         <p className="text-slate-500">読み込み中…</p>
+      ) : isError ? (
+        <p className="text-red-600">イベントを読み込めませんでした</p>
       ) : (
         data?.map((ev) => (
           <article key={ev._id} className="rounded-lg border bg-white p-4">

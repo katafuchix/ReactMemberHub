@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api, type Announcement } from '../lib/api';
 
 export default function Announcements() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['announcements'],
     queryFn: async () => {
       const { data } = await api.get<{ items: Announcement[] }>(
@@ -13,6 +13,8 @@ export default function Announcements() {
   });
 
   if (isLoading) return <p className="text-slate-500">読み込み中…</p>;
+  if (isError)
+    return <p className="text-red-600">お知らせを読み込めませんでした</p>;
 
   return (
     <div className="space-y-3">

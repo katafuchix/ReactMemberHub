@@ -10,8 +10,23 @@ export function setToken(token: string | null): void {
   else localStorage.removeItem(TOKEN_KEY);
 }
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? '/api';
+
+// ネイティブ (capacitor://localhost 等) では Vite proxy が無いため相対 /api は解決できない。
+// VITE_API_BASE_URL (絶対URL) の設定漏れをすぐ気付けるように警告する。
+if (
+  !import.meta.env.VITE_API_BASE_URL &&
+  typeof window !== 'undefined' &&
+  !window.location.protocol.startsWith('http')
+) {
+  console.warn(
+    `[api] VITE_API_BASE_URL が未設定です。baseURL="${apiBaseUrl}" ではネイティブから API に到達できません。` +
+      '.env.staging / .env.production に絶対URLを設定してビルドし直してください。',
+  );
+}
+
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? '/api',
+  baseURL: apiBaseUrl,
 });
 
 api.interceptors.request.use((config) => {
