@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { api } from '../lib/api';
 
@@ -42,7 +43,15 @@ export default function Profile() {
   return (
     <div className="space-y-6">
       <section className="rounded-lg border bg-white p-4">
-        <h1 className="mb-3 text-lg font-bold">プロフィール</h1>
+        <div className="mb-3 flex items-center justify-between">
+          <h1 className="text-lg font-bold">プロフィール</h1>
+          <Link
+            to={`/users/${user.id}`}
+            className="text-sm text-indigo-600 hover:underline"
+          >
+            公開プロフィールを見る
+          </Link>
+        </div>
         <form onSubmit={save} className="space-y-3">
           <label className="block text-sm">
             <span className="text-slate-600">表示名</span>

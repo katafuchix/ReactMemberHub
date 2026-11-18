@@ -2,7 +2,8 @@ import { Router } from 'express';
 import { isValidObjectId } from 'mongoose';
 import { z } from 'zod';
 import { validateBody } from '../lib/validate';
-import { requireAuth } from '../middleware/auth';
+import { optionalAuth, requireAuth } from '../middleware/auth';
+import { Post } from '../models/Post';
 import { User, profileUser, publicUser } from '../models/User';
 
 const router = Router();
@@ -54,6 +55,37 @@ router.get('/:id', async (req, res) => {
     return;
   }
   res.json({ user: profileUser(user) });
+});
+
+// GET /api/users/:id/posts?page=1&limit=20 — 指定ユーザーの投稿一覧
+// 未ログインは public のみ、ログイン済みは members 限定投稿も含む
+router.get('/:id/posts', optionalAuth, async (req, res) => {
+  if (!isValidObjectId(req.params.id)) {
+    res.status(400).json({ error: 'invalid_id' });
+    return;
+  }
+  const exists = await User.exists({ _id: req.params.id });
+  if (!exists) {
+    res.status(404).json({ error: 'not_found' });
+    return;
+  }
+
+  const page = Math.max(1, Number(req.query.page ?? 1));
+  const limit = Math.min(50, Math.max(1, Number(req.query.limit ?? 20)));
+  const filter: Record<string, unknown> = { author: req.params.id };
+  if (!req.user) filter.visibility = 'public';
+
+  const [items, total] = await Promise.all([
+    Post.find(filter)
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate('author', 'displayName avatarUrl membership')
+      .lean(),
+    Post.countDocuments(filter),
+  ]);
+
+  res.json({ items, total, page, limit, hasMore: page * limit < total });
 });
 
 export default router;
