@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+/* ユーザー画面 (ルートの index.css) と同じ: Tailwind 標準の配色 */
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 antialiased;
+}
