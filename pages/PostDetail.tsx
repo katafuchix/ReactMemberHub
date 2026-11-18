@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { api, type Comment, type Post } from '../lib/api';
 
@@ -68,9 +68,16 @@ export default function PostDetail() {
     <div className="space-y-4">
       <article className="rounded-lg border bg-white p-4">
         <div className="mb-2 flex items-center justify-between text-sm text-slate-500">
-          <span className="font-medium text-slate-700">
-            {post.author?.displayName ?? '退会ユーザー'}
-          </span>
+          {post.author ? (
+            <Link
+              to={`/users/${post.author._id}`}
+              className="font-medium text-slate-700 hover:text-indigo-600 hover:underline"
+            >
+              {post.author.displayName}
+            </Link>
+          ) : (
+            <span className="font-medium text-slate-700">退会ユーザー</span>
+          )}
           <span>{new Date(post.createdAt).toLocaleString('ja-JP')}</span>
         </div>
         <p className="whitespace-pre-wrap text-slate-800">{post.body}</p>
@@ -163,9 +170,16 @@ export default function PostDetail() {
           {commentsQuery.data?.map((c) => (
             <li key={c._id} className="border-b pb-2 last:border-0">
               <div className="text-sm text-slate-500">
-                <span className="font-medium text-slate-700">
-                  {c.author?.displayName ?? '退会ユーザー'}
-                </span>{' '}
+                {c.author ? (
+                  <Link
+                    to={`/users/${c.author._id}`}
+                    className="font-medium text-slate-700 hover:text-indigo-600 hover:underline"
+                  >
+                    {c.author.displayName}
+                  </Link>
+                ) : (
+                  <span className="font-medium text-slate-700">退会ユーザー</span>
+                )}{' '}
                 · {new Date(c.createdAt).toLocaleString('ja-JP')}
               </div>
               <p className="text-slate-800">{c.body}</p>

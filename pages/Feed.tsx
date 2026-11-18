@@ -1,19 +1,41 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { api, type Post } from '../lib/api';
 
 function PostCard({ post }: { post: Post }) {
+  const navigate = useNavigate();
   return (
     <Link
       to={`/posts/${post._id}`}
       className="block rounded-lg border bg-white p-4 hover:border-indigo-300"
     >
       <div className="mb-1 flex items-center gap-2 text-sm text-slate-500">
-        <span className="font-medium text-slate-700">
-          {post.author?.displayName ?? '退会ユーザー'}
-        </span>
+        {post.author ? (
+          // カード全体が Link のため、入れ子の <a> を避けて onClick で遷移する
+          <span
+            role="link"
+            tabIndex={0}
+            className="font-medium text-slate-700 hover:text-indigo-600 hover:underline"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              navigate(`/users/${post.author._id}`);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                e.stopPropagation();
+                navigate(`/users/${post.author._id}`);
+              }
+            }}
+          >
+            {post.author.displayName}
+          </span>
+        ) : (
+          <span className="font-medium text-slate-700">退会ユーザー</span>
+        )}
         <span>·</span>
         <span>{new Date(post.createdAt).toLocaleString('ja-JP')}</span>
         {post.visibility === 'members' && (

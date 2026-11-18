@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import PostDetail from './pages/PostDetail';
 import Profile from './pages/Profile';
 import Register from './pages/Register';
+import UserProfile from './pages/UserProfile';
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="announcements" element={<Announcements />} />
         <Route path="events" element={<Events />} />
         <Route path="contents" element={<Contents />} />
+        <Route path="users/:id" element={<UserProfile />} />
         <Route
           path="profile"
           element={
