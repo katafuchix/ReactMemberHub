@@ -21,13 +21,13 @@ export function Sidebar({ userName }: { userName: string }) {
     <>
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 h-14 bg-white border-b border-slate-200 flex items-center px-4 gap-3">
         <button
-          className="w-10 h-10 inline-flex items-center justify-center rounded-lg hover:bg-gray-100 cursor-pointer"
+          className="w-10 h-10 inline-flex items-center justify-center rounded-lg hover:bg-slate-100 cursor-pointer"
           onClick={() => setMobileOpen(true)}
           aria-label="メニューを開く"
         >
           <Menu className="w-5 h-5 text-slate-600" />
         </button>
-        <span className="text-base font-bold text-slate-900">管理画面</span>
+        <span className="text-base font-bold text-indigo-600">Member Hub 管理</span>
       </div>
 
       {mobileOpen && (
@@ -54,8 +54,8 @@ export function Sidebar({ userName }: { userName: string }) {
         </button>
 
         <div className="px-6 py-5 border-b border-slate-200">
-          <p className="text-base font-bold text-slate-900 truncate">管理画面</p>
-          <p className="text-xs text-slate-500">Member Hub 運営管理システム</p>
+          <p className="text-base font-bold text-indigo-600 truncate">Member Hub</p>
+          <p className="text-xs text-slate-500">管理画面</p>
         </div>
 
         <nav aria-label="メインナビゲーション" className="flex-1 px-3 py-4 overflow-y-auto">
@@ -70,10 +70,10 @@ export function Sidebar({ userName }: { userName: string }) {
                     onClick={close}
                     aria-current={isActive ? "page" : undefined}
                     className={cn(
-                      "flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm underline-offset-[3px] transition-colors",
+                      "flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-colors",
                       isActive
-                        ? "bg-primary-50 text-primary-500 font-bold"
-                        : "text-body hover:bg-slate-50 hover:underline active:bg-slate-100",
+                        ? "bg-indigo-50 text-indigo-600 font-bold"
+                        : "text-slate-700 hover:bg-slate-50 hover:underline active:bg-slate-100",
                     )}
                   >
                     <item.icon className="w-4 h-4 flex-shrink-0" />
@@ -89,11 +89,11 @@ export function Sidebar({ userName }: { userName: string }) {
         <div className="px-3 py-4 border-t border-slate-200 mt-auto">
           <div className="flex items-center gap-3 px-4 py-2 mb-1">
             <div
-              className="w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center flex-shrink-0"
+              className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center flex-shrink-0"
               role="img"
               aria-label={userName}
             >
-              <span className="text-primary-500 text-sm font-bold">{userName.charAt(0)}</span>
+              <span className="text-indigo-600 text-sm font-bold">{userName.charAt(0)}</span>
             </div>
             <div className="min-w-0">
               <p className="text-sm font-bold text-slate-900 truncate">{userName}</p>
@@ -103,7 +103,7 @@ export function Sidebar({ userName }: { userName: string }) {
           <form action={logout}>
             <button
               type="submit"
-              className="flex items-center gap-3 w-full px-4 py-2.5 rounded-lg text-sm text-body underline-offset-[3px] hover:bg-slate-50 hover:underline active:bg-slate-100 transition-colors cursor-pointer"
+              className="flex items-center gap-3 w-full px-4 py-2.5 rounded-lg text-sm text-slate-700 hover:bg-slate-50 hover:underline active:bg-slate-100 transition-colors cursor-pointer"
             >
               <LogOut className="w-4 h-4 flex-shrink-0" />
               <span>ログアウト</span>

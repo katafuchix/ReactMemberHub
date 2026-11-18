@@ -1,7 +1,7 @@
 # 管理画面 (admin/)
 
 運営向けの管理画面。Next.js (App Router) の独立アプリとして `admin/` に置き、データは既存の Express API 経由で扱う。
-デザインは デジタル庁デザインシステム (DADS) のトークンを使った左サイドバー型レイアウト（`admin/app/globals.css`）。
+デザインはユーザー画面（ルートの `index.css` / `tailwind.config.ts`）と同じ Tailwind 標準の配色（主色 indigo、背景 slate-50）に揃えた左サイドバー型レイアウト（`admin/app/globals.css`）。
 
 ## 構成
 

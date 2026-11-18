@@ -11,14 +11,14 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-slate-900">管理画面</h1>
           <p className="text-sm text-slate-600 mt-1">Member Hub 運営管理システム</p>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-8">
+        <div className="bg-white rounded-lg border border-slate-200 p-8">
           <form action={dispatch} className="space-y-5">
             <div className="leading-normal space-y-1.5">
               <label htmlFor="email" className="block text-sm font-bold text-slate-900">
