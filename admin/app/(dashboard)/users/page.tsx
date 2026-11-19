@@ -9,20 +9,22 @@ const LIMIT = 20;
 export default async function UsersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; membership?: string; page?: string }>;
+  searchParams: Promise<{ q?: string; membership?: string; status?: string; page?: string }>;
 }) {
-  const { q = "", membership = "", page: pageParam } = await searchParams;
+  const { q = "", membership = "", status = "", page: pageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam ?? 1) || 1);
 
   const params = new URLSearchParams({ page: String(page), limit: String(LIMIT) });
   if (q) params.set("q", q);
   if (membership) params.set("membership", membership);
+  if (status) params.set("status", status);
   const data = await apiFetch<Paged<AdminUser>>(`/admin/users?${params}`);
 
   const pageHref = (p: number) => {
     const sp = new URLSearchParams();
     if (q) sp.set("q", q);
     if (membership) sp.set("membership", membership);
+    if (status) sp.set("status", status);
     sp.set("page", String(p));
     return `/users?${sp}`;
   };
@@ -30,6 +32,7 @@ export default async function UsersPage({
     const sp = new URLSearchParams();
     if (q) sp.set("q", q);
     if (m) sp.set("membership", m);
+    if (status) sp.set("status", status);
     const qs = sp.toString();
     return qs ? `/users?${qs}` : "/users";
   };
@@ -40,12 +43,13 @@ export default async function UsersPage({
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
       <div className="mb-6">
         <h1 className="text-xl sm:text-2xl font-bold text-slate-900">ユーザー管理</h1>
-        <p className="text-sm text-slate-500 mt-1">登録ユーザーの一覧・検索</p>
+        <p className="text-sm text-slate-500 mt-1">登録ユーザーの一覧・検索（表示名から詳細・編集・退会へ）</p>
       </div>
 
       <div className="flex flex-wrap items-end gap-3 mb-6">
         <form method="get" className="leading-normal w-full sm:w-80">
           {membership && <input type="hidden" name="membership" value={membership} />}
+          {status && <input type="hidden" name="status" value={status} />}
           <div className="relative">
             <Search
               className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"
@@ -84,6 +88,34 @@ export default async function UsersPage({
         </div>
       </div>
 
+      <div className="flex flex-wrap gap-1 mb-4" aria-label="状態">
+        {[
+          { value: "", label: "有効なユーザー" },
+          { value: "deleted", label: "退会済み" },
+          { value: "all", label: "すべて" },
+        ].map((opt) => {
+          const sp = new URLSearchParams();
+          if (q) sp.set("q", q);
+          if (membership) sp.set("membership", membership);
+          if (opt.value) sp.set("status", opt.value);
+          const qs = sp.toString();
+          return (
+            <Link
+              key={opt.value}
+              href={qs ? `/users?${qs}` : "/users"}
+              aria-current={status === opt.value ? "true" : undefined}
+              className={`inline-flex items-center px-3 py-1 rounded-full text-sm border transition-colors ${
+                status === opt.value
+                  ? "bg-slate-800 border-slate-800 text-white font-medium"
+                  : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              {opt.label}
+            </Link>
+          );
+        })}
+      </div>
+
       <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
         <table className="w-full">
           <thead>
@@ -112,7 +144,17 @@ export default async function UsersPage({
                 className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors"
               >
                 <td className="py-2.5 px-3 text-sm font-medium text-slate-900 whitespace-nowrap">
-                  {u.displayName}
+                  <Link
+                    href={`/users/${u.id}`}
+                    className="text-indigo-600 hover:underline"
+                  >
+                    {u.displayName}
+                  </Link>
+                  {u.deletedAt && (
+                    <span className="ml-2 rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700">
+                      退会済み
+                    </span>
+                  )}
                   {u.role === "admin" && (
                     <span className="ml-2 rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-600">
                       管理者

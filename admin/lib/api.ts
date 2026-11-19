@@ -10,10 +10,12 @@ export interface AdminUser {
   email: string;
   displayName: string;
   avatarUrl: string;
+  bio?: string;
   role: "member" | "admin";
   membership: "free" | "premium";
   emailVerified: boolean;
   createdAt: string;
+  deletedAt: string | null;
 }
 
 export interface AdminStats {
@@ -53,9 +55,10 @@ export async function apiPublic<T>(path: string, init?: RequestInit): Promise<T>
 }
 
 /** 管理者トークン付きで Express API を呼ぶ (サーバーコンポーネント / Server Action 専用) */
-export async function apiFetch<T>(path: string): Promise<T> {
+export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const token = (await cookies()).get(TOKEN_COOKIE)?.value;
   return apiPublic<T>(path, {
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    ...init,
+    headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}), ...init?.headers },
   });
 }
