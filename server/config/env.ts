@@ -4,6 +4,9 @@ import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
 // server/config/env.ts -> repo root
+// dotenv は先に読んだ値を上書きしないので、.env.local を先に読んで優先させる
+// (Vite / Next.js と同じ「.env.local > .env」)。
+config({ path: resolve(here, '../../.env.local') });
 config({ path: resolve(here, '../../.env') });
 // fallback: カレントに .env があれば読む
 config();

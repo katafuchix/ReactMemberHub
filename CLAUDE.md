@@ -17,6 +17,14 @@
 - `npm run typecheck && npm run typecheck:server` — 型チェック
 - Vite は `/api` を `http://localhost:8000` にプロキシする（`vite.config.ts`）
 
+## env の読み込みルール
+
+- 開発系は **`.env.local` > `.env`**（ルートの client / server、`admin/` すべて共通）。共通値は `.env`、自分用の上書きは `.env.local`（どちらも gitignore 済み）。
+- ルート: server（`server/config/env.ts`、dotenv で `.env.local` → `.env` の順に読む）と Vite client が共用。雛形は `.env.example`。
+- `admin/`（Next.js）: `admin/.env.local` を使う。雛形は `admin/.env.sample`。
+- `.env.staging` / `.env.production` は `build:staging` / `build:production`（Vite mode）専用で、開発時（`dev` / `dev:full`）は読まれない。実際に効くのは `VITE_API_BASE_URL` のみ。
+- シェル / CI で設定済みの環境変数はどのファイルより優先される。
+
 ## モバイル (Capacitor)
 
 詳細は [`docs/capacitor.md`](docs/capacitor.md)。
