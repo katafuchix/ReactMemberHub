@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import { softDeletePlugin } from '../lib/softDelete';
 
 export const REACTION_TYPES = ['like', 'celebrate', 'support'] as const;
 export type ReactionType = (typeof REACTION_TYPES)[number];
@@ -23,5 +24,8 @@ const reactionSchema = new Schema(
 
 // 1 ユーザー x 1 投稿 x 1 リアクション種別 は 1 件まで
 reactionSchema.index({ post: 1, user: 1, type: 1 }, { unique: true });
+
+// 退会ユーザーのデータは論理削除 (admin の退会処理で一括 deletedAt を立てる)
+reactionSchema.plugin(softDeletePlugin);
 
 export const Reaction = model('Reaction', reactionSchema);

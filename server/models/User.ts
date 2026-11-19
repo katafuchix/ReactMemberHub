@@ -18,6 +18,11 @@ const userSchema = new Schema(
     membership: { type: String, enum: ['free', 'premium'], default: 'free' },
     // メール認証。未認証の間はログイン不可 (server/routes/auth.ts)
     emailVerified: { type: Boolean, default: false },
+    // 論理削除 (退会)。null/未設定 = 有効。データは残し、ログイン・公開表示だけ止める
+    deletedAt: { type: Date, default: null },
+    // 退会時に元のメールを退避。email は `deleted+<id>@deleted.invalid` に差し替えて
+    // unique を解放する (同じメールで再登録すると別レコードになる)。復帰時に戻す。
+    deletedEmail: { type: String, lowercase: true, trim: true },
     emailVerificationToken: {
       type: new Schema(
         { value: { type: String }, expiresAt: { type: Date } },

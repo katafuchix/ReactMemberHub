@@ -13,9 +13,9 @@ async function seed() {
 
   await Promise.all([
     User.deleteMany({}),
-    Post.deleteMany({}),
-    Comment.deleteMany({}),
-    Reaction.deleteMany({}),
+    Post.deleteMany({}).setOptions({ withDeleted: true }),
+    Comment.deleteMany({}).setOptions({ withDeleted: true }),
+    Reaction.deleteMany({}).setOptions({ withDeleted: true }),
     Announcement.deleteMany({}),
     Event.deleteMany({}),
     Content.deleteMany({}),

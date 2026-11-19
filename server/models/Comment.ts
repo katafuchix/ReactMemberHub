@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import { softDeletePlugin } from '../lib/softDelete';
 
 const commentSchema = new Schema(
   {
@@ -15,5 +16,8 @@ const commentSchema = new Schema(
 );
 
 commentSchema.index({ post: 1, createdAt: 1 });
+
+// 退会ユーザーのデータは論理削除 (admin の退会処理で一括 deletedAt を立てる)
+commentSchema.plugin(softDeletePlugin);
 
 export const Comment = model('Comment', commentSchema);

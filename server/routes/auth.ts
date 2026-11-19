@@ -87,7 +87,7 @@ router.post('/login', validateBody(loginSchema), async (req, res) => {
   const { email, password } = req.body as z.infer<typeof loginSchema>;
 
   const user = await User.findOne({ email: email.toLowerCase() });
-  if (!user) {
+  if (!user || user.deletedAt) {
     res.status(401).json({ error: 'invalid_credentials' });
     return;
   }
@@ -138,7 +138,7 @@ router.post('/resend-verification', validateBody(resendSchema), async (req, res)
 
   const user = await User.findOne({ email: email.toLowerCase() });
   // ユーザーの存在有無は伏せる。未認証ユーザーのときだけ再送する。
-  if (!user || user.emailVerified) {
+  if (!user || user.deletedAt || user.emailVerified) {
     res.json({ ok: true });
     return;
   }

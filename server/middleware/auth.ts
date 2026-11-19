@@ -10,7 +10,7 @@ function extractToken(req: Request): string | null {
 async function loadUser(token: string) {
   const payload = verifyToken(token);
   const user = await User.findById(payload.sub).lean();
-  if (!user) return null;
+  if (!user || user.deletedAt) return null;
   return {
     id: String(user._id),
     role: user.role as 'member' | 'admin',

@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import { softDeletePlugin } from '../lib/softDelete';
 
 const postSchema = new Schema(
   {
@@ -27,5 +28,8 @@ const postSchema = new Schema(
 
 postSchema.index({ createdAt: -1 });
 postSchema.index({ tags: 1, createdAt: -1 });
+
+// 退会ユーザーのデータは論理削除 (admin の退会処理で一括 deletedAt を立てる)
+postSchema.plugin(softDeletePlugin);
 
 export const Post = model('Post', postSchema);
