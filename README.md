@@ -112,7 +112,7 @@ npm run cap:android           # Android Studio を開く
     ├── middleware/       … auth（requireAuth / optionalAuth / requireAdmin）
     ├── lib/              … jwt, validate（zod）
     ├── models/           … User, Post, Comment, Reaction, Announcement, Event, Content
-    ├── routes/           … auth, users, posts, announcements, events, contents
+    ├── routes/           … auth, users, posts, announcements, events, contents, admin
     └── seed.ts
 ```
 
@@ -123,7 +123,11 @@ npm run cap:android           # Android Studio を開く
 - `POST /api/auth/resend-verification` `{ email }` → `{ ok: true }`
 - `POST /api/auth/login` `{ email, password }` → `{ token, user }`（未認証は 403 `email_unverified`）
 - `GET  /api/auth/me`
+- `GET  /api/health`
 - `PATCH /api/users/me` / `POST /api/users/me/upgrade` / `downgrade`
+- `POST /api/users/me/withdraw` `{ password }`（退会＝論理削除。管理者は不可）
+- `GET  /api/users/:id`（公開プロフィール。退会済みは 404）
+- `GET  /api/users/:id/posts?page=`
 - `GET  /api/posts?q=&tag=&page=` / `POST /api/posts`
 - `GET/DELETE /api/posts/:id`
 - `GET/POST /api/posts/:id/comments`
@@ -131,3 +135,8 @@ npm run cap:android           # Android Studio を開く
 - `GET /api/announcements` `/:id`（作成・削除は admin）
 - `GET /api/events?scope=upcoming|all` `/:id`（作成・削除は admin）
 - `GET /api/contents?type=&recommended=true` `/:id`（作成・削除は admin）
+- `GET /api/admin/stats`（admin のみ。以下 `/api/admin/*` すべて admin）
+- `GET /api/admin/users?q=&membership=&status=&page=` / `GET/PATCH/DELETE /api/admin/users/:id`（DELETE は退会＝論理削除）
+- `POST /api/admin/users/:id/restore`（退会の取り消し）
+
+リクエスト・レスポンス・エラーコードの詳細は [`docs/api.md`](docs/api.md)。
