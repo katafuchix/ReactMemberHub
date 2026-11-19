@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import { connectDB } from './config/db';
 import { env } from './config/env';
+import adminRoutes from './routes/admin';
 import announcementRoutes from './routes/announcements';
 import authRoutes from './routes/auth';
 import contentRoutes from './routes/contents';
@@ -23,6 +24,7 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/announcements', announcementRoutes);

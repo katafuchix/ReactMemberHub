@@ -3,6 +3,16 @@
 会員制コミュニティアプリの **動作確認用 PoC**。ユーザー登録から簡単なコミュニティ機能までを一通り触れるようにしたもの。
 
 **単一 `package.json`** 構成：ルートに Vite/React クライアント、`server/` に Express + MongoDB API。`tsx` でサーバーを直接実行（ビルド不要）。
+<div>
+<img width="260" alt="ReactMemberHub_1" src="https://github.com/user-attachments/assets/5b3e0dec-9a7a-405a-82f0-cc585b7043a3" />
+
+<img width="260"  alt="ReactMemberHub_2" src="https://github.com/user-attachments/assets/0c1b8eb1-ebd6-4b47-8fd7-f91922464f4b" />
+
+<img width="260"  alt="ReactMemberHub_3" src="https://github.com/user-attachments/assets/6c641696-326a-49c3-882b-c72ef1b9ae5d" />
+
+<img width="260"  alt="ReactMemberHub_4" src="https://github.com/user-attachments/assets/65d36c21-87fa-4189-a8e5-29991e09fc99" />
+</div>
+
 
 ## 機能（PoC 範囲）
 
@@ -63,6 +73,29 @@ npm run dev:full
 | `npm run seed` | DB リセット＋サンプル投入 |
 | `npm run typecheck` / `typecheck:server` | 型チェック |
 | `npm run build` | クライアントを `dist/` にビルド |
+
+## モバイルアプリ（iOS / Android）
+
+クライアント（`dist`）を [Capacitor](https://capacitorjs.com/)（`8.5.x`）でネイティブアプリ化できる。Express サーバーはバンドルせず **リモート API のまま**で、Capacitor はフロントエンドだけをラップする。`capacitor.config.ts` / `android/` / `ios/` を追加済み。
+
+| 環境 | bundle id | アプリ名 |
+|---|---|---|
+| production | `net.deskplate.memberhub` | Member Hub |
+| staging | `net.deskplate.memberhub.dev` | Member Hub |
+
+- **Android**: `android/app/build.gradle` の product flavors `production` / `dev`（`dev` は `.dev` サフィックス）。
+- **iOS**: Debug ビルド = staging（`.dev`）／ Release ビルド = production。
+- API 接続先は Vite の mode で切替（`.env.staging` / `.env.production` の `VITE_API_BASE_URL`、絶対 URL 必須）。
+- サーバー CORS は `CLIENT_ORIGIN` をカンマ区切りで複数指定（ネイティブ用に `capacitor://localhost` / `https://localhost` を許可）。
+
+```bash
+npm run cap:sync:staging      # build（--mode staging）+ cap sync
+npm run cap:sync:production    # build（--mode production）+ cap sync
+npm run cap:ios               # Xcode を開く
+npm run cap:android           # Android Studio を開く
+```
+
+詳細は [`docs/capacitor.md`](docs/capacitor.md)。
 
 ## ディレクトリ
 
