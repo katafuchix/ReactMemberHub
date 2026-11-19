@@ -10,7 +10,8 @@ admin/                    独立した package.json を持つ Next.js 16 アプ�
 ├─ app/(auth)/login       ログイン画面 + Server Action (actions.ts)
 ├─ app/(dashboard)/       サイドバー付きレイアウト (管理者のみ)
 │   ├─ page.tsx           ダッシュボード (会員・投稿の概況)
-│   └─ users/page.tsx     ユーザー一覧 (検索・会員種別フィルタ・ページ送り)
+│   └─ users/page.tsx     ユーザー一覧 (検索・会員種別フィルタ・ページ送り・退会済み絞り込み)
+│       └─ [id]/          ユーザー詳細・編集・退会/復帰 (詳細は user-withdrawal.md)
 ├─ components/layout/     Sidebar
 ├─ components/ui/         Button / Input
 ├─ lib/api.ts             Express API クライアント (サーバー専用)
